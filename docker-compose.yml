@@ -1,0 +1,80 @@
+version: "2"
+
+# volumes的加载问题
+# - /data是匿名volume，使用docker-compose rm -v可以连带容器一起删除
+# volumes不要混用，例如mysql是/data/mysql 而不是/data/gogs/mysql
+
+services:
+  drone:
+    image: webhippie/drone
+    ports:
+      - "8000:8000"
+    volumes:
+      - /data/drone:/var/lib/drone
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    links:
+      - gogs
+    environment:
+      - DRONE_OPEN=true
+      - DRONE_GOGS=true
+      - DRONE_GOGS_URL=http://gogs:3000
+      - DRONE_HOST=drone
+      - DRONE_SECRET=drone
+      - DRONE_SERVER=http://drone:8000
+      - DRONE_MYSQL_USERNAME=halsn
+      - DRONE_MYSQL_PASSWORD=halsn
+      - DRONE_MYSQL_HOST=mysql:3306
+      - DRONE_MYSQL_DATABASE drone
+
+  # drone-agent:
+    # image: webhippie/drone
+    # image: drone/drone
+    # command: agent
+    # restart: always
+    # depends_on:
+      # - drone-server
+    # volumes:
+      # - /var/run/docker.sock:/var/run/docker.sock
+    # environment:
+      # - DRONE_SERVER=ws://drone-server:8000/ws/broker
+      # - DRONE_SECRET=drone
+
+  gogs:
+    image: gogs/gogs
+    restart: unless-stopped
+    volumes:
+      - /data/gogs:/data
+    ports:
+      - "3000:3000"
+      - "10022:22"
+    depends_on:
+      - mysql
+    links:
+      - mysql
+
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=gogs
+      - MYSQL_USER=halsn
+      - MYSQL_PASSWORD=halsn
+    volumes:
+      - /data/mysql:/var/lib/mysql
+
+  # sonarqube:
+    # restart: unless-stopped
+    # image: sonarqube:alpine
+    # volumes:
+      # - /data/sonarqube/data:/opt/sonarqube/data
+      # - /data/sonarqube/extensions:/opt/sonarqube/extensions
+    # environment:
+      # - SONARQUBE_HOME=/opt/sonarqube
+      # - SONARQUBE_JDBC_USERNAME=sonar
+      # - SONARQUBE_JDBC_PASSWORD=sonar
+      # - SONARQUBE_JDBC_URL=
+    # ports:
+      # - "9000:9000"
+      # - "9092:9092"
