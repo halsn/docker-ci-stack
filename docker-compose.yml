@@ -11,6 +11,7 @@ version: "2"
 # postgres 172.17.0.5
 # sonarqube 172.17.0.6
 # 系统重启后需要docker会重新分配ip，可能与初次创建时的ip不一致，需要重新删除容器并启动
+# host模式下gogs webhook会出现404错误，无法解决
 
 services:
 
