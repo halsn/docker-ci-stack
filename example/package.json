@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "roadhog server &! nodemon app.js",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^20.0.4"
+  },
+  "jest": {
+    "collectCoverage": true
+  }
+}
