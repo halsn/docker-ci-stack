@@ -16,4 +16,5 @@ docker-compose up -d
 触发Drone需要在Gogs项目设置里设置Drone的IP
 
 2. 使用
+
 在工程根目录添加`.drone.yml`和`sonar-project.properties`文件，将代码推送到本地Gogs仓库即可触发CI，
