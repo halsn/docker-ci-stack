@@ -1,0 +1,14 @@
+pipeline:
+  test:
+    image: node:7.10.0-alpine
+    commands:
+      - echo 'start test'
+      - npm i jest -g
+      - npm test
+      - echo 'finished'
+  sonar:
+    image: halsn/sonar-scanner
+    commands:
+      - echo 'sonar-scanner start'
+      - sonar-scanner
+      - echo 'finished'
